@@ -3,6 +3,7 @@ import { Card, Suit, CardType } from "./card.ts";
 export default class BlackjackGame {
 	deck_count: number;
 	draw_pile: Array<Card>;
+	discard_pile: Array<Card>;
 
 	constructor(deck_count: number) {
 		if (deck_count <= 0) {
@@ -17,6 +18,8 @@ export default class BlackjackGame {
 			const generated_cards = this.makeBlackjackDeck();
 			this.draw_pile = this.draw_pile.concat(generated_cards);
 		}
+
+		this.discard_pile = [];
 	}
 
 	makeBlackjackDeck(): Array<Card> {
@@ -69,5 +72,25 @@ export default class BlackjackGame {
 	getTrueCount() {
 		const count = this.draw_pile.reduce((acc, card) => acc + card.counting_value, 0);
 		return count / this.deck_count;
+	}
+
+	shuffle() {
+		// Take all cards out of the discard pile, and put them back in the draw pile.
+		this.draw_pile = this.draw_pile.concat(this.discard_pile);
+
+		// Empty the discard pile.
+		this.discard_pile = [];
+
+		// Shuffle the draw pile (Fisher-Yates: https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle)
+		let current_index = this.draw_pile.length;
+		while (current_index !== 0) {
+			const random_index = Math.floor(Math.random() * current_index);
+			current_index--;
+
+			// Swap the current index with the random one.
+			const temp = this.draw_pile[current_index];
+			this.draw_pile[current_index] = this.draw_pile[random_index];
+			this.draw_pile[random_index] = temp;
+		}
 	}
 }

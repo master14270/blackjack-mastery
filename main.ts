@@ -4,8 +4,12 @@ import BlackjackGame from "./blackjack_game.ts";
 if (import.meta.main) {
 	const decks = 1;
 	const game = new BlackjackGame(decks);
+
+	console.log("Before Shuffle.");
 	game.printDecks();
 
-	const true_count = game.getTrueCount();
-	console.log("True count is: ", true_count);
+	game.shuffle();
+
+	console.log("After Shuffle.");
+	game.printDecks();
 }
