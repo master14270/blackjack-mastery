@@ -22,9 +22,10 @@ export class Card {
 
 	constructor(suit: Suit, value: number, counting_value: number, card_type: CardType) {
 		this.suit = suit;
+		this.card_type = card_type;
+
 		this.value = value;
 		this.counting_value = counting_value;
-		this.card_type = card_type;
 	}
 
 	to_string(): string {
@@ -71,4 +72,42 @@ export class Card {
 
 		return result;
 	}
+}
+
+export function getBlackjackDeck(): Array<Card> {
+	const deck: Array<Card> = [];
+
+	/*
+        The Hi-Lo Card Counting System:
+        Ace, King, Queen, Jack, Ten     => -1
+        Nine, Eight, Seven              =>  0
+        Six, Five, Four, Three, Two     => +1
+    */
+
+	// For each suit.
+	for (let suit: Suit = 0; suit < 4; suit++) {
+		// Add each standard card, 2-10
+		for (let count = 2; count <= 10; count++) {
+			// We don't have to worry about aces here.
+			let counting_value;
+			if (count >= 10) {
+				counting_value = -1;
+			} else if (count <= 6) {
+				counting_value = 1;
+			} else {
+				counting_value = 0;
+			}
+			deck.push(new Card(suit, count, counting_value, CardType.Standard));
+		}
+
+		// Add Kings, Queens, Jacks
+		deck.push(new Card(suit, 10, -1, CardType.King));
+		deck.push(new Card(suit, 10, -1, CardType.Queen));
+		deck.push(new Card(suit, 10, -1, CardType.Jack));
+
+		// Aces
+		deck.push(new Card(suit, 11, -1, CardType.Ace));
+	}
+
+	return deck;
 }

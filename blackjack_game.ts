@@ -1,4 +1,4 @@
-import { Card, Suit, CardType } from "./card.ts";
+import { Card, getBlackjackDeck } from "./card.ts";
 import { Hand } from "./hand.ts";
 
 enum GameState {
@@ -33,7 +33,7 @@ export default class BlackjackGame {
 		// Populate the cards based on how many decks are here.
 		this.draw_pile = [];
 		for (let i = 0; i < deck_count; i++) {
-			const generated_cards = this.makeBlackjackDeck();
+			const generated_cards = getBlackjackDeck();
 			this.draw_pile = this.draw_pile.concat(generated_cards);
 		}
 
@@ -41,44 +41,6 @@ export default class BlackjackGame {
 		this.dealer_hand = new Hand();
 		this.player_hand = new Hand();
 		this.state = GameState.Loading;
-	}
-
-	makeBlackjackDeck(): Array<Card> {
-		const deck: Array<Card> = [];
-
-		/*
-            The Hi-Lo Card Counting System:
-            Ace, King, Queen, Jack, Ten     => -1
-            Nine, Eight, Seven              =>  0
-            Six, Five, Four, Three, Two     => +1
-        */
-
-		// For each suit.
-		for (let suit: Suit = 0; suit < 4; suit++) {
-			// Add each standard card, 2-10
-			for (let count = 2; count <= 10; count++) {
-				// We don't have to worry about aces here.
-				let counting_value;
-				if (count >= 10) {
-					counting_value = -1;
-				} else if (count <= 6) {
-					counting_value = 1;
-				} else {
-					counting_value = 0;
-				}
-				deck.push(new Card(suit, count, counting_value, CardType.Standard));
-			}
-
-			// Add Kings, Queens, Jacks
-			deck.push(new Card(suit, 10, -1, CardType.King));
-			deck.push(new Card(suit, 10, -1, CardType.Queen));
-			deck.push(new Card(suit, 10, -1, CardType.Jack));
-
-			// Aces
-			deck.push(new Card(suit, 11, -1, CardType.Ace));
-		}
-
-		return deck;
 	}
 
 	printDecks() {
