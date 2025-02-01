@@ -4,12 +4,5 @@ import BlackjackGame from "./blackjack_game.ts";
 if (import.meta.main) {
 	const decks = 1;
 	const game = new BlackjackGame(decks);
-
-	console.log("Before Shuffle.");
-	game.printDecks();
-
-	game.shuffle();
-
-	console.log("After Shuffle.");
-	game.printDecks();
+	game.play();
 }
