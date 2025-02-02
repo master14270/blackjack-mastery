@@ -1,7 +1,7 @@
 import { assertEquals } from "@std/assert";
-import BlackjackGame from "./blackjack_game.ts";
-import { Hand } from "./hand.ts";
-import { getCardsFromString } from "./card.ts";
+import BlackjackGame from "./classes/blackjack_game.ts";
+import { Hand } from "./classes/hand.ts";
+import { getCardsFromString } from "./classes/card.ts";
 
 // Generate a new deck, and verify the true count is always zero.
 Deno.test(function testNewDeckTrueCount() {
