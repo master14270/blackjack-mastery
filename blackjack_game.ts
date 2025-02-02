@@ -102,8 +102,8 @@ export default class BlackjackGame {
 		this.discard_pile = this.discard_pile.concat(this.player_hand.clear());
 	}
 
-	// Main game loop.
-	play() {
+	// Main game loop (for console).
+	playConsole() {
 		this.shuffle();
 
 		while (this.state !== GameState.Quit) {
