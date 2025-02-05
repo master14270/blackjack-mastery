@@ -1,7 +1,7 @@
 import { Card, getBlackjackDeck } from "./card.ts";
 import { Hand } from "./hand.ts";
 
-enum GameState {
+export enum GameState {
 	Loading, // Initial
 	// Consider adding betting?
 	Setup,
@@ -10,6 +10,7 @@ enum GameState {
 	Showdown,
 	Reset,
 	Quit, // Done
+	ShowingHands,
 }
 
 export default class BlackjackGame {
