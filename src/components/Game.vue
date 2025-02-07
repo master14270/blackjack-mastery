@@ -104,18 +104,30 @@ game.value.state = GameState.Reset;
 	<div class="game-container playingCards">
 		<!-- Card piles. TODO: Add backs of playing cards. -->
 		<div class="card-pile discard-pile-count">Discarded: {{ game.discard_pile.length }}</div>
-		<div class="card-pile draw-pile-count">Drawing: {{ game.draw_pile.length }}</div>
+		<div class="card-pile draw-pile-count">
+			<!-- There is a problem right now with the deck, when it's too big. -->
+			<!-- <Card v-for="card in game.draw_pile" :key="card.id" :card="card" :face-down="true" /> -->
+			Discarded:
+			{{ game.discard_pile.length }}
+		</div>
+		<!-- Draw Pile: {{ game.draw_pile.length }} -->
 
 		<ul class="hand-container hand" v-if="game.dealer_hand.cards.length">
 			<Card
 				v-for="(card, i) in game.dealer_hand.cards"
+				:key="card.id"
 				:card="card"
 				:face-down="i >= 1 && hideDealerCards"
 			/>
 		</ul>
 
 		<ul class="hand-container hand" v-if="game.player_hand.cards.length">
-			<Card v-for="card in game.player_hand.cards" :card="card" :face-down="false" />
+			<Card
+				v-for="card in game.player_hand.cards"
+				:key="card.id"
+				:card="card"
+				:face-down="false"
+			/>
 		</ul>
 
 		<div class="user-control-container">
@@ -150,7 +162,7 @@ game.value.state = GameState.Reset;
 	outline: solid green;
 	position: absolute;
 	width: 600px;
-	height: 1500px;
+	height: 150px;
 	top: 140px;
 	left: 200px;
 }
@@ -158,5 +170,22 @@ game.value.state = GameState.Reset;
 .user-control-container {
 	position: relative;
 	top: 150px;
+}
+
+/* Consider using these styles with a transition group. */
+.card-moving {
+	transition: transform 0.5s ease-out, opacity 0.5s ease-out;
+	opacity: 0;
+}
+
+.card-moving-enter-active,
+.card-moving-leave-active {
+	transition: transform 0.5s ease-out, opacity 0.5s ease-out;
+}
+
+.card-moving-enter,
+.card-moving-leave-to {
+	transform: scale(0.5) translateY(-50px);
+	opacity: 0;
 }
 </style>

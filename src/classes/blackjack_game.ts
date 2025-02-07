@@ -1,4 +1,4 @@
-import { Card, getBlackjackDeck } from "./card.ts";
+import { Card, getBlackjackDecks } from "./card.ts";
 import { Hand } from "./hand.ts";
 
 export enum GameState {
@@ -32,11 +32,7 @@ export default class BlackjackGame {
 		this.deck_count = deck_count;
 
 		// Populate the cards based on how many decks are here.
-		this.draw_pile = [];
-		for (let i = 0; i < deck_count; i++) {
-			const generated_cards = getBlackjackDeck();
-			this.draw_pile = this.draw_pile.concat(generated_cards);
-		}
+		this.draw_pile = getBlackjackDecks(deck_count);
 
 		this.discard_pile = [];
 		this.dealer_hand = new Hand();

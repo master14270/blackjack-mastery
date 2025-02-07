@@ -15,12 +15,14 @@ export enum Suit {
 }
 
 export class Card {
+	id: number;
 	suit: Suit;
 	value: number;
 	counting_value: number;
 	card_type: CardType;
 
-	constructor(suit: Suit, card_type: CardType, value: number) {
+	constructor(id: number, suit: Suit, card_type: CardType, value: number) {
+		this.id = id;
 		this.suit = suit;
 		this.card_type = card_type;
 		this.value = value;
@@ -92,28 +94,31 @@ export class Card {
  * Returns a standard blackjack deck. Call multiple times to get multiple decks.
  * @returns A single black jack deck.
  */
-export function getBlackjackDeck(): Array<Card> {
+export function getBlackjackDecks(deckCount: number): Array<Card> {
 	const deck: Array<Card> = [];
+	let idCounter = 0;
 
-	/*
-        The Hi-Lo Card Counting System:
-        Ace, King, Queen, Jack, Ten     => -1
-        Nine, Eight, Seven              =>  0
-        Six, Five, Four, Three, Two     => +1
-    */
+	for (let i = 0; i < deckCount; i++) {
+		/*
+            The Hi-Lo Card Counting System:
+            Ace, King, Queen, Jack, Ten     => -1
+            Nine, Eight, Seven              =>  0
+            Six, Five, Four, Three, Two     => +1
+        */
 
-	// For each suit.
-	for (let suit: Suit = 0; suit < 4; suit++) {
-		// Add each standard card, 2-10
-		for (let value = 2; value <= 10; value++) {
-			deck.push(new Card(suit, CardType.Standard, value));
+		// For each suit.
+		for (let suit: Suit = 0; suit < 4; suit++) {
+			// Add each standard card, 2-10
+			for (let value = 2; value <= 10; value++) {
+				deck.push(new Card(++idCounter, suit, CardType.Standard, value));
+			}
+
+			// Add Kings, Queens, Jacks, Aces
+			deck.push(new Card(++idCounter, suit, CardType.King, 10));
+			deck.push(new Card(++idCounter, suit, CardType.Queen, 10));
+			deck.push(new Card(++idCounter, suit, CardType.Jack, 10));
+			deck.push(new Card(++idCounter, suit, CardType.Ace, 11));
 		}
-
-		// Add Kings, Queens, Jacks, Aces
-		deck.push(new Card(suit, CardType.King, 10));
-		deck.push(new Card(suit, CardType.Queen, 10));
-		deck.push(new Card(suit, CardType.Jack, 10));
-		deck.push(new Card(suit, CardType.Ace, 11));
 	}
 
 	return deck;
@@ -188,7 +193,7 @@ export function getCardsFromString(str: string): Array<Card> {
 			throw Error(`Unexpected suit provided ${second_char}. We expect 'H', 'D', 'C', 'S'.`);
 		}
 
-		cards.push(new Card(suit, card_type, value));
+		cards.push(new Card(-1, suit, card_type, value));
 	}
 
 	return cards;

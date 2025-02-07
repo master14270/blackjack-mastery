@@ -35,12 +35,14 @@ const cardRank = computed(() => {
 </script>
 
 <template>
-	<li class="card" :class="[cardSuit, `rank-${cardRank}`, faceDown ? 'back' : '']">
-		<template v-if="!faceDown">
-			<div class="rank">{{ cardRank.toUpperCase() }}</div>
-			<div class="suit" v-html="'&' + cardSuit + ';'"></div>
-		</template>
-		<template v-else> * </template>
+	<li>
+		<div class="card" :class="[faceDown ? 'back' : `rank-${cardRank} ${cardSuit}`]">
+			<template v-if="!faceDown">
+				<span class="rank">{{ cardRank.toUpperCase() }}</span>
+				<span class="suit" v-html="'&' + cardSuit + ';'"></span>
+			</template>
+			<template v-else> * </template>
+		</div>
 	</li>
 </template>
 
