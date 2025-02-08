@@ -2,11 +2,16 @@
 import { ref, watch, computed } from "vue";
 import BlackjackGame, { GameState } from "../classes/blackjack_game.ts";
 import Card from "./Card.vue";
+import Swal from "sweetalert2";
 
 // Settings and data
 const deck_count = 1;
 const game = ref(new BlackjackGame(deck_count));
 const show_hands_duration_ms = 3 * 1000;
+
+// Display data that can change.
+let user_score_display: string;
+let dealer_score_display: string;
 
 // State handler
 watch(
@@ -15,17 +20,18 @@ watch(
 		const local_game = game.value;
 
 		if (state === GameState.Setup) {
-			console.log("Setting up...");
 			local_game.dealHands();
+			updateHandScoreDisplay();
 			local_game.state = GameState.PlayerTurn;
 		} else if (state === GameState.DealerTurn) {
-			console.log("dealer turn...");
+			updateHandScoreDisplay();
 
 			while (local_game.dealer_hand.getScore() < 17) {
 				// TODO: Delay for UI???
 
 				// Draw a card.
 				local_game.dealer_hand.addCards(local_game.drawCards(1));
+				updateHandScoreDisplay();
 			}
 
 			// The dealer busted, you win.
@@ -34,26 +40,54 @@ watch(
 			} else {
 				local_game.state = GameState.Showdown;
 			}
-		} else if (state === GameState.Showdown) {
-			console.log("Show dow up...");
+		}
 
-			const player_score = local_game.player_hand.getScore();
-			const dealer_score = local_game.dealer_hand.getScore();
-			if (player_score > dealer_score) {
-				console.log("Player wins!");
-			} else if (player_score < dealer_score) {
-				console.log("Dealer wins!");
-			} else {
-				console.log("It's a draw.");
-			}
-
+		// TODO: Remove this state, it's obsolete.
+		else if (state === GameState.Showdown) {
 			local_game.state = GameState.ShowingHands;
 		} else if (state === GameState.Reset) {
-			console.log("Resetting...");
-			console.log("==================================");
 			local_game.discardHands();
 			local_game.state = GameState.Setup;
 		} else if (state === GameState.ShowingHands) {
+			const player_score = local_game.player_hand.getScore();
+			const dealer_score = local_game.dealer_hand.getScore();
+			let title;
+			let icon;
+
+			// Check for busts.
+			if (player_score > 21) {
+				title = "Dealer wins :(";
+				icon = "error";
+			} else if (dealer_score > 21) {
+				title = "You win :)";
+				icon = "success";
+			}
+
+			// Check for regular scoring.
+			else if (player_score < dealer_score) {
+				title = "Dealer wins :(";
+				icon = "error";
+			} else if (player_score > dealer_score) {
+				title = "You win :)";
+				icon = "success";
+			}
+
+			// Last case: must be a draw.
+			else {
+				title = "It's a draw :/";
+				icon = "info";
+			}
+
+			// @ts-ignore
+			Swal.fire({
+				toast: true,
+				title: title,
+				icon: icon,
+				width: "250px",
+				showConfirmButton: false,
+				timer: show_hands_duration_ms,
+				timerProgressBar: true,
+			});
 			setTimeout(() => {
 				local_game.state = GameState.Reset;
 			}, show_hands_duration_ms);
@@ -80,13 +114,25 @@ function clickedHit() {
 
 	// See if we busted.
 	if (handScore > 21) {
-		console.log("You busted!");
 		local_game.state = GameState.ShowingHands;
 	}
+
+	updateHandScoreDisplay();
 }
 
 function clickedStand() {
 	game.value.state = GameState.DealerTurn;
+}
+
+// Assumes hands have cards.
+function updateHandScoreDisplay() {
+	user_score_display = game.value.player_hand.getScore().toString();
+
+	if (hideDealerCards.value) {
+		dealer_score_display = game.value.dealer_hand.cards[0].value.toString() + "?";
+	} else {
+		dealer_score_display = game.value.dealer_hand.getScore().toString();
+	}
 }
 
 // Shuffle the deck initially, then start the game.
@@ -107,11 +153,13 @@ game.value.state = GameState.Reset;
 		<div class="card-pile draw-pile-count">
 			<!-- There is a problem right now with the deck, when it's too big. -->
 			<!-- <Card v-for="card in game.draw_pile" :key="card.id" :card="card" :face-down="true" /> -->
-			Discarded:
-			{{ game.discard_pile.length }}
+			Drawing:
+			{{ game.draw_pile.length }}
 		</div>
-		<!-- Draw Pile: {{ game.draw_pile.length }} -->
 
+		<div class="score-display score-display-dealer">
+			Dealer Score: {{ dealer_score_display }}
+		</div>
 		<ul class="hand-container hand" v-if="game.dealer_hand.cards.length">
 			<Card
 				v-for="(card, i) in game.dealer_hand.cards"
@@ -129,6 +177,7 @@ game.value.state = GameState.Reset;
 				:face-down="false"
 			/>
 		</ul>
+		<div class="score-display score-display-user">Player Score: {{ user_score_display }}</div>
 
 		<div class="user-control-container">
 			<button class="primary" @click="clickedHit()" :disabled="!canPlayerAct">Hit</button>
@@ -159,7 +208,6 @@ game.value.state = GameState.Reset;
 }
 
 .hand-container {
-	outline: solid green;
 	position: absolute;
 	width: 600px;
 	height: 150px;
@@ -170,6 +218,18 @@ game.value.state = GameState.Reset;
 .user-control-container {
 	position: relative;
 	top: 150px;
+}
+
+.score-display {
+	position: absolute;
+	width: 100px;
+	left: 200px;
+}
+.score-display-user {
+	bottom: 80px;
+}
+.score-display-dealer {
+	top: 50px;
 }
 
 /* Consider using these styles with a transition group. */

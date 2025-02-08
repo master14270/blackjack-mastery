@@ -5,6 +5,7 @@
     "jsr:@std/internal@^1.0.5": "1.0.5",
     "npm:@vitejs/plugin-vue@^5.2.1": "5.2.1_vite@6.0.11_vue@3.5.13__typescript@5.6.3_typescript@5.6.3",
     "npm:@vue/tsconfig@0.7": "0.7.0_typescript@5.6.3_vue@3.5.13__typescript@5.6.3",
+    "npm:sweetalert2@^11.15.10": "11.15.10",
     "npm:typescript@~5.6.2": "5.6.3",
     "npm:vite@^6.0.5": "6.0.11",
     "npm:vue-tsc@^2.2.0": "2.2.0_typescript@5.6.3",
@@ -423,6 +424,9 @@
     "source-map-js@1.2.1": {
       "integrity": "sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA=="
     },
+    "sweetalert2@11.15.10": {
+      "integrity": "sha512-Sjiwcd5mWiz8X0JFkHsso2EPVQHrLCjVv+xR6Ry2LKf4KY6kSi4U5pM0Tgmn1c7SMfkyDqPal2NWqwj6vck8bw=="
+    },
     "typescript@5.6.3": {
       "integrity": "sha512-hjcS1mhfuyi4WW8IWtjP7brDrG2cuDZukyrYrSauoXGNgx0S7zceP07adYkJycEr56BOUTNPzbInooiN3fn1qw=="
     },
@@ -466,6 +470,7 @@
       "dependencies": [
         "npm:@vitejs/plugin-vue@^5.2.1",
         "npm:@vue/tsconfig@0.7",
+        "npm:sweetalert2@^11.15.10",
         "npm:typescript@~5.6.2",
         "npm:vite@^6.0.5",
         "npm:vue-tsc@^2.2.0",
