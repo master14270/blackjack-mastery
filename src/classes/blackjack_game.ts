@@ -48,10 +48,17 @@ export default class BlackjackGame {
 		console.log(card_strings.join(", "));
 	}
 
-	// TODO: Verify this is calculating the true count correctly.
+	/**
+	 * True count = running count / number of decks remaining to be dealt
+	 * @returns The true count... eventually.
+	 */
 	getTrueCount() {
 		const count = this.draw_pile.reduce((acc, card) => acc + card.counting_value, 0);
 		return count / this.deck_count;
+	}
+
+	getRunningCountDiscarded() {
+		return this.discard_pile.reduce((acc, card) => acc + card.counting_value, 0);
 	}
 
 	shuffle() {

@@ -12,6 +12,7 @@ const show_hands_duration_ms = 3 * 1000;
 // Display data that can change.
 let user_score_display: string;
 let dealer_score_display: string;
+let running_count_discarded_display: string;
 
 // State handler
 watch(
@@ -47,6 +48,7 @@ watch(
 			local_game.state = GameState.ShowingHands;
 		} else if (state === GameState.Reset) {
 			local_game.discardHands();
+			updateRunningCountDisplay();
 			local_game.state = GameState.Setup;
 		} else if (state === GameState.ShowingHands) {
 			const player_score = local_game.player_hand.getScore();
@@ -135,6 +137,10 @@ function updateHandScoreDisplay() {
 	}
 }
 
+function updateRunningCountDisplay() {
+	running_count_discarded_display = game.value.getRunningCountDiscarded().toString();
+}
+
 // Shuffle the deck initially, then start the game.
 game.value.shuffle();
 game.value.state = GameState.Reset;
@@ -148,6 +154,9 @@ game.value.state = GameState.Reset;
     -->
 
 	<div class="game-container playingCards">
+		<div class="running-count">
+			Running Count (discarded): {{ running_count_discarded_display }}
+		</div>
 		<!-- Card piles. TODO: Add backs of playing cards. -->
 		<div class="card-pile discard-pile-count">Discarded: {{ game.discard_pile.length }}</div>
 		<div class="card-pile draw-pile-count">
@@ -230,6 +239,13 @@ game.value.state = GameState.Reset;
 }
 .score-display-dealer {
 	top: 50px;
+}
+
+.running-count {
+	position: absolute;
+	/* outline: solid gold; */
+	width: 200px;
+	left: 400px;
 }
 
 /* Consider using these styles with a transition group. */
